@@ -3,6 +3,7 @@ import Logo from './components/Logo';
 import { Canvas } from '@react-three/fiber';
 import { Suspense } from 'react';
 import ThreeDModelRoom from './components/ThreeDModelRoom';
+import { Environment } from '@react-three/drei';
 
 
 function App() {
@@ -18,6 +19,8 @@ function App() {
         <Logo onClick={handleLogoClick} />
       ) : (
         <Canvas>
+          <ambientLight intensity={0.5} />
+          <Environment preset='city' />
           <Suspense fallback={null}>
             <ThreeDModelRoom />
           </Suspense>
