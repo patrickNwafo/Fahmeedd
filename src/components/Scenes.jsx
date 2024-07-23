@@ -25,6 +25,8 @@ export function Scenes(props) {
         return () => clearTimeout(timer); // Cleanup timer on component unmount
     }, []);
 
+
+
     useFrame(() => {
         if (groupRef.current) {
             if (zoom) {
