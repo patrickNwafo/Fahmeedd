@@ -13,19 +13,27 @@ export function Scenes(props) {
     const { gl } = useThree()
     const groupRef = useRef();
     const [zoom, setZoom] = useState(false);
+    const { camera, size } = useThree();
+    const isMobile = size.width <= 768;
+
 
     useEffect(() => {
-        setTimeout(() => setZoom(true), 4000);
+        const timer = setTimeout(() => {
+            setZoom(true);
+        }, 4000); // Set zoom to true after 4 seconds
+
+        return () => clearTimeout(timer); // Cleanup timer on component unmount
     }, []);
 
-    useFrame((state) => {
+    useFrame(() => {
         if (groupRef.current) {
-            const { camera } = state;
             if (zoom) {
-                camera.position.lerp({ x: 0, y: 1, z: 5 }, 0.05);
+                const targetPosition = isMobile ? { x: 0.5, y: 1, z: 5.5 } : { x: 0, y: 1, z: 5 }; // Adjust target positions for mobile and desktop
+                camera.position.lerp(targetPosition, 0.05);
                 camera.lookAt(groupRef.current.position);
             } else {
-                camera.position.lerp({ x: 0, y: 1, z: 10 }, 0.05);
+                const initialPosition = isMobile ? { x: 0, y: 1, z: 8 } : { x: 0, y: 1, z: 10 }; // Adjust initial positions for mobile and desktop
+                camera.position.lerp(initialPosition, 0.05);
                 camera.lookAt(groupRef.current.position);
             }
         }
@@ -663,6 +671,7 @@ export function Scenes(props) {
                 receiveShadow
                 geometry={nodes.Plane004_2.geometry}
                 material={materials.ScreenPanel}
+                onClick={() => handleClick('https://instagram.com')}
             />
             <mesh
                 castShadow
@@ -705,6 +714,7 @@ export function Scenes(props) {
                 receiveShadow
                 geometry={nodes.Plane007_2.geometry}
                 material={materials['ScreenPanel.001']}
+                onClick={() => handleClick('https://instagram.com')}
             />
         </group>
     )
