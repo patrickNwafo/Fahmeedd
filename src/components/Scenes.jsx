@@ -717,7 +717,7 @@ export function Scenes(props) {
                 receiveShadow
                 geometry={nodes.Plane007_2.geometry}
                 material={materials['ScreenPanel.001']}
-                onClick={() => handleClick('https://instagram.com')}
+                onClick={() => handleClick('https://www.instagram.com/fahmeedx')}
             />
         </group>
     )

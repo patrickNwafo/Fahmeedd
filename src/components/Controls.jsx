@@ -14,7 +14,7 @@ export const Controls = () => {
                 animate={inView1 ? { opacity: 1, x: 0 } : {}}
                 transition={{ duration: 2 }}
             >
-                <img className="object-contain w-48 h-48 transition cursor-pointer hover:translate-y-2" src={Logo} alt="logo" />
+                <img className="object-contain w-24 h-24 transition cursor-pointer md:w-48 md:h-48 hover:translate-y-2" src={Logo} alt="logo" />
             </motion.div>
         </div>
     )
