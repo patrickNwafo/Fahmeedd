@@ -2,11 +2,12 @@ import React, { useState, useEffect } from 'react';
 import Logo from './components/Logo';
 import { Canvas } from '@react-three/fiber';
 import { Suspense } from 'react';
-import { OrbitControls, Preload } from '@react-three/drei';
+import { OrbitControls, Preload, Scroll, ScrollControls } from '@react-three/drei';
 
 import CanvasLoader from "./components/CanvasLoader"
 import { Scenes } from './components/Scenes';
 import LoadingScreen from './components/LoadingScreen';
+import { Controls } from './components/Controls';
 
 
 
@@ -38,12 +39,20 @@ function App() {
         <>
           {isLoading && <LoadingScreen />}
           <Canvas camera={{ position: [0, 4, 11], fov: 100 }}>
+
+
+
             <ambientLight intensity={0.5} />
             <spotLight position={[10, 10, 10]} angle={1.15} penumbra={1} />
-            <Suspense >
-              <Scenes />
-            </Suspense>
-            <Preload all />
+            <ScrollControls pages={1} damping={0.1}>
+              <Suspense >
+                <Scenes />
+              </Suspense>
+              <Preload all />
+              <Scroll html>
+                <Controls />
+              </Scroll>
+            </ScrollControls>
           </Canvas>
         </>
       )}
