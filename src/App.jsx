@@ -41,13 +41,11 @@ function App() {
             <ambientLight intensity={0.5} />
             <spotLight position={[10, 10, 10]} angle={1.15} penumbra={1} />
             <Suspense >
-              <OrbitControls />
               <Scenes />
             </Suspense>
             <Preload all />
           </Canvas>
         </>
-
       )}
     </div>
   );

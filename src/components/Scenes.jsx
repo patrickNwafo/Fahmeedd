@@ -8,9 +8,7 @@ import { motion } from 'framer-motion-3d'
 
 export function Scenes(props) {
     const { nodes, materials } = useGLTF('/ene.glb')
-    const screenRef = useRef()
-    const monitorRef = useRef()
-    const { gl } = useThree()
+
     const groupRef = useRef();
     const [zoom, setZoom] = useState(false);
     const { camera, size } = useThree();
@@ -30,12 +28,12 @@ export function Scenes(props) {
     useFrame(() => {
         if (groupRef.current) {
             if (zoom) {
-                const targetPosition = isMobile ? { x: 0.5, y: 1, z: 5.5 } : { x: 0, y: 1, z: 5 }; // Adjust target positions for mobile and desktop
+                const targetPosition = isMobile ? { x: 0.5, y: 1, z: 6 } : { x: 0, y: 1, z: 4 }; // Adjust target positions for mobile and desktop
                 camera.position.lerp(targetPosition, 0.05);
                 camera.lookAt(groupRef.current.position);
             } else {
                 const initialPosition = isMobile ? { x: 0, y: 1, z: 8 } : { x: 0, y: 1, z: 10 }; // Adjust initial positions for mobile and desktop
-                camera.position.lerp(initialPosition, 0.05);
+                camera.position.lerp(initialPosition, 0.5);
                 camera.lookAt(groupRef.current.position);
             }
         }
@@ -47,6 +45,9 @@ export function Scenes(props) {
 
     return (
         <group {...props} dispose={null} ref={groupRef}>
+            <ambientLight intensity={0.5} />
+            <directionalLight position={[5, 5, 5]} intensity={1.5} />
+            <pointLight position={[-5, 5, -5]} intensity={1.5} />
             <mesh castShadow receiveShadow geometry={nodes.cable.geometry} material={materials.cable} />
             <mesh
                 castShadow
