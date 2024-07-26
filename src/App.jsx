@@ -4,9 +4,7 @@ import { Canvas } from '@react-three/fiber';
 import { Suspense } from 'react';
 import { OrbitControls, Preload, Scroll, ScrollControls } from '@react-three/drei';
 
-import CanvasLoader from "./components/CanvasLoader"
 import { Scenes } from './components/Scenes';
-import LoadingScreen from './components/LoadingScreen';
 import { Controls } from './components/Controls';
 
 
@@ -36,25 +34,19 @@ function App() {
       {!show3DModel ? (
         <Logo onClick={handleLogoClick} />
       ) : (
-        <>
-          {isLoading && <LoadingScreen />}
-          <Canvas camera={{ position: [0, 4, 11], fov: 100 }}>
 
 
+        <Canvas camera={{ position: [0, 4, 11], fov: 100 }}>
+          <ambientLight intensity={0.5} />
+          <spotLight position={[10, 10, 10]} angle={1.15} penumbra={1} />
+          <ScrollControls pages={1} damping={0.1}>
+            <Scenes />
+            <Scroll html>
+              <Controls />
+            </Scroll>
+          </ScrollControls>
+        </Canvas>
 
-            <ambientLight intensity={0.5} />
-            <spotLight position={[10, 10, 10]} angle={1.15} penumbra={1} />
-            <ScrollControls pages={1} damping={0.1}>
-              <Suspense >
-                <Scenes />
-              </Suspense>
-              <Preload all />
-              <Scroll html>
-                <Controls />
-              </Scroll>
-            </ScrollControls>
-          </Canvas>
-        </>
       )}
     </div>
   );
