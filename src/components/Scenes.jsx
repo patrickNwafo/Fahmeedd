@@ -45,9 +45,8 @@ export function Scenes(props) {
 
     return (
         <group {...props} dispose={null} ref={groupRef}>
-            <ambientLight intensity={0.5} />
+
             <directionalLight position={[5, 5, 5]} intensity={1.5} />
-            <pointLight position={[-5, 5, -5]} intensity={1.5} />
             <mesh castShadow receiveShadow geometry={nodes.cable.geometry} material={materials.cable} />
             <mesh
                 castShadow

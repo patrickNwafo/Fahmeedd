@@ -2,10 +2,11 @@ import React, { useState, useEffect } from 'react';
 import Logo from './components/Logo';
 import { Canvas } from '@react-three/fiber';
 import { Suspense } from 'react';
-import { OrbitControls, Preload, Scroll, ScrollControls } from '@react-three/drei';
+import { Scroll, ScrollControls } from '@react-three/drei';
 
 import { Scenes } from './components/Scenes';
 import { Controls } from './components/Controls';
+import Spinner from './components/Spiner';
 
 
 
@@ -30,23 +31,24 @@ function App() {
 
 
   return (
-    <div className="flex items-center justify-center w-screen h-screen ">
-      {!show3DModel ? (
-        <Logo onClick={handleLogoClick} />
+    <div className="flex items-center justify-center w-screen h-screen">
+      {isLoading ? (
+        <Spinner />
       ) : (
-
-
-        <Canvas camera={{ position: [0, 4, 11], fov: 100 }}>
-          <ambientLight intensity={0.5} />
-          <spotLight position={[10, 10, 10]} angle={1.15} penumbra={1} />
-          <ScrollControls pages={1} damping={0.1}>
-            <Scenes />
-            <Scroll html>
-              <Controls />
-            </Scroll>
-          </ScrollControls>
-        </Canvas>
-
+        !show3DModel ? (
+          <Logo onClick={handleLogoClick} />
+        ) : (
+          <Canvas camera={{ position: [0, 4, 11], fov: 100 }}>
+            <ambientLight intensity={0.5} />
+            <spotLight position={[10, 10, 10]} angle={1.15} penumbra={1} />
+            <ScrollControls pages={1} damping={0.1}>
+              <Scenes />
+              <Scroll html>
+                <Controls />
+              </Scroll>
+            </ScrollControls>
+          </Canvas>
+        )
       )}
     </div>
   );
