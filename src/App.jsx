@@ -4,9 +4,9 @@ import { Canvas } from '@react-three/fiber';
 import { Suspense } from 'react';
 import { Scroll, ScrollControls } from '@react-three/drei';
 
-import { Scenes } from './components/Scenes';
 import { Controls } from './components/Controls';
 import Spinner from './components/Spiner';
+import { Experience } from './components/Experience';
 
 
 
@@ -42,7 +42,7 @@ function App() {
             <ambientLight intensity={0.5} />
             <spotLight position={[10, 10, 10]} angle={1.15} penumbra={1} />
             <ScrollControls pages={1} damping={0.1}>
-              <Scenes />
+              <Experience />
               <Scroll html>
                 <Controls />
               </Scroll>
