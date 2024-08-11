@@ -24,7 +24,7 @@ export function Scenes(props) {
     useEffect(() => {
         // Load video and create video texture
         const video1 = document.createElement('video');
-        video1.src = 'textures/ricky.mov'; // Replace with the actual path to your video
+        video1.src = 'textures/ricky.mp4'; // Replace with the actual path to your video
         video1.crossOrigin = 'Anonymous';
         video1.loop = true;
         video1.muted = true;
@@ -37,7 +37,7 @@ export function Scenes(props) {
         setVideoTexture1(videoTexture1);
 
         const video2 = document.createElement('video');
-        video2.src = 'textures/vscode.mp4'; // Replace with the actual path to your video
+        video2.src = 'textures/ricky.mp4'; // Replace with the actual path to your video
         video2.crossOrigin = 'Anonymous';
         video2.loop = true;
         video2.muted = true;
@@ -718,7 +718,7 @@ export function Scenes(props) {
                 castShadow
                 receiveShadow
                 geometry={nodes.Plane004_2.geometry}
-
+                ref={videoRef2}
             >
                 <meshBasicMaterial map={textureVscode} toneMapped={false} />
             </mesh>
@@ -765,8 +765,9 @@ export function Scenes(props) {
                 castShadow
                 receiveShadow
                 geometry={nodes.Plane007_2.geometry}
+                ref={videoRef1}
             >
-                <meshBasicMaterial map={textureVscode} toneMapped={false} />
+
             </mesh>
         </group>
     )
