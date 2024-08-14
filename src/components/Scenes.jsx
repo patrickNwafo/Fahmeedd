@@ -18,7 +18,7 @@ export function Scenes(props) {
     const [zoom, setZoom] = useState(false);
     const { camera, size } = useThree();
     const isMobile = size.width <= 768;
-    const textureVscode = useVideoTexture("textures/ricky.mp4");
+    // const textureVscode = useVideoTexture("textures/ricky.mp4");
 
     const vertexShader = `
     varying vec2 vUv;
