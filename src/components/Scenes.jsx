@@ -8,7 +8,7 @@ import { motion } from 'framer-motion-3d'
 import * as THREE from 'three'
 
 export function Scenes(props) {
-    const { nodes, materials } = useGLTF('/ene.glb')
+    const { nodes, materials } = useGLTF('/enee.glb')
 
     const groupRef = useRef();
     const videoRef1 = useRef();
@@ -19,6 +19,33 @@ export function Scenes(props) {
     const { camera, size } = useThree();
     const isMobile = size.width <= 768;
     const textureVscode = useVideoTexture("textures/ricky.mp4");
+
+    const vertexShader = `
+    varying vec2 vUv;
+
+    void main() {
+      vUv = uv;
+      gl_Position = projectionMatrix * modelViewMatrix * vec4(position, 1.0);
+    }
+  `;
+
+    const fragmentShader = `
+    uniform sampler2D videoTexture;
+    varying vec2 vUv;
+
+    void main() {
+      vec4 videoColor = texture2D(videoTexture, vUv);
+      gl_FragColor = videoColor;
+    }
+  `;
+
+    const shaderMaterial = new THREE.ShaderMaterial({
+        vertexShader,
+        fragmentShader,
+        uniforms: {
+            videoTexture: { value: videoTexture1 }, // Initially set to null or the first texture
+        },
+    });
 
 
     useEffect(() => {
@@ -74,703 +101,841 @@ export function Scenes(props) {
 
     useEffect(() => {
         if (videoRef1.current && videoTexture1) {
-            videoRef1.current.material = new THREE.MeshBasicMaterial({ map: videoTexture1 });
+            shaderMaterial.uniforms.videoTexture.value = videoTexture1;
+            videoRef1.current.material = shaderMaterial;
             videoRef1.current.material.needsUpdate = true;
         }
         if (videoRef2.current && videoTexture2) {
-            videoRef2.current.material = new THREE.MeshBasicMaterial({ map: videoTexture2 });
+            shaderMaterial.uniforms.videoTexture.value = videoTexture2;
+            videoRef2.current.material = shaderMaterial;
             videoRef2.current.material.needsUpdate = true;
         }
     }, [videoTexture1, videoTexture2]);
 
-    const handleClick = (url) => {
-        window.open(url, '_blank')
-    }
+    // const handleClick = (url) => {
+    //     window.open(url, '_blank')
+    // }
 
     return (
 
-        <group {...props} dispose={null} ref={groupRef}>
-            <directionalLight position={[5, 5, 5]} intensity={1.5} />
-            <mesh castShadow receiveShadow geometry={nodes.cable.geometry} material={materials.cable} />
-            <mesh
-                castShadow
-                receiveShadow
-                geometry={nodes.Tabletop.geometry}
-                material={materials.DeskMat}
+        // <group {...props} dispose={null} ref={groupRef}>
+        //     <directionalLight position={[5, 5, 5]} intensity={1.5} />
+        //     <mesh castShadow receiveShadow geometry={nodes.cable.geometry} material={materials.cable} />
+        //     <mesh
+        //         castShadow
+        //         receiveShadow
+        //         geometry={nodes.Tabletop.geometry}
+        //         material={materials.DeskMat}
 
-            />
-            <mesh
-                castShadow
-                receiveShadow
-                geometry={nodes.LegUpper_left.geometry}
-                material={materials.DeskMat}
-            />
-            <mesh
-                castShadow
-                receiveShadow
-                geometry={nodes.LegLower_left.geometry}
-                material={materials.DeskMat}
-            />
-            <mesh
-                castShadow
-                receiveShadow
-                geometry={nodes.LegUpper_right.geometry}
-                material={materials.DeskMat}
+        //     />
+        //     <mesh
+        //         castShadow
+        //         receiveShadow
+        //         geometry={nodes.LegUpper_left.geometry}
+        //         material={materials.DeskMat}
+        //     />
+        //     <mesh
+        //         castShadow
+        //         receiveShadow
+        //         geometry={nodes.LegLower_left.geometry}
+        //         material={materials.DeskMat}
+        //     />
+        //     <mesh
+        //         castShadow
+        //         receiveShadow
+        //         geometry={nodes.LegUpper_right.geometry}
+        //         material={materials.DeskMat}
 
-            />
-            <mesh
-                castShadow
-                receiveShadow
-                geometry={nodes.LegLower_right.geometry}
-                material={materials.DeskMat}
+        //     />
+        //     <mesh
+        //         castShadow
+        //         receiveShadow
+        //         geometry={nodes.LegLower_right.geometry}
+        //         material={materials.DeskMat}
 
-            />
-            <mesh
-                castShadow
-                receiveShadow
-                geometry={nodes.Control_Box.geometry}
-                material={materials.DeskMat}
-            />
-            <mesh
-                castShadow
-                receiveShadow
-                geometry={nodes.legFoot_01.geometry}
-                material={nodes.legFoot_01.material}
-            />
-            <mesh
-                castShadow
-                receiveShadow
-                geometry={nodes.legFoot_02.geometry}
-                material={nodes.legFoot_02.material}
-            />
-            <mesh
-                castShadow
-                receiveShadow
-                geometry={nodes.carpet_low001.geometry}
-                material={materials['01___Default']}
-            />
-            <mesh
-                castShadow
-                receiveShadow
-                geometry={nodes.Ip14pmx_lens_glass.geometry}
-                material={materials.Ip14pmx_lens_glass}
-            />
-            <mesh
-                castShadow
-                receiveShadow
-                geometry={nodes.Ip14pmx_screen_glass.geometry}
-                material={materials.Ip14pmx_screen_glass}
-            />
-            <mesh
-                castShadow
-                receiveShadow
-                geometry={nodes.Ip14pmx_camglass.geometry}
-                material={materials.Ip14pmx_camglass}
+        //     />
+        //     <mesh
+        //         castShadow
+        //         receiveShadow
+        //         geometry={nodes.Control_Box.geometry}
+        //         material={materials.DeskMat}
+        //     />
+        //     <mesh
+        //         castShadow
+        //         receiveShadow
+        //         geometry={nodes.legFoot_01.geometry}
+        //         material={nodes.legFoot_01.material}
+        //     />
+        //     <mesh
+        //         castShadow
+        //         receiveShadow
+        //         geometry={nodes.legFoot_02.geometry}
+        //         material={nodes.legFoot_02.material}
+        //     />
+        //     <mesh
+        //         castShadow
+        //         receiveShadow
+        //         geometry={nodes.carpet_low001.geometry}
+        //         material={materials['01___Default']}
+        //     />
+        //     <mesh
+        //         castShadow
+        //         receiveShadow
+        //         geometry={nodes.Ip14pmx_lens_glass.geometry}
+        //         material={materials.Ip14pmx_lens_glass}
+        //     />
+        //     <mesh
+        //         castShadow
+        //         receiveShadow
+        //         geometry={nodes.Ip14pmx_screen_glass.geometry}
+        //         material={materials.Ip14pmx_screen_glass}
+        //     />
+        //     <mesh
+        //         castShadow
+        //         receiveShadow
+        //         geometry={nodes.Ip14pmx_camglass.geometry}
+        //         material={materials.Ip14pmx_camglass}
 
-            />
-            <mesh
-                castShadow
-                receiveShadow
-                geometry={nodes.Plane002.geometry}
-                material={nodes.Plane002.material}
+        //     />
+        //     <mesh
+        //         castShadow
+        //         receiveShadow
+        //         geometry={nodes.Plane002.geometry}
+        //         material={nodes.Plane002.material}
 
-            />
-            <mesh
-                castShadow
-                receiveShadow
-                geometry={nodes.StandLowerPart001.geometry}
-                material={materials['MonitorMain.001']}
+        //     />
+        //     <mesh
+        //         castShadow
+        //         receiveShadow
+        //         geometry={nodes.StandLowerPart001.geometry}
+        //         material={materials['MonitorMain.001']}
 
-            />
-            <mesh
-                castShadow
-                receiveShadow
-                geometry={nodes.Bakrest_Plane000.geometry}
-                material={materials['Leathe_office_chair.002']}
-            />
-            <mesh
-                castShadow
-                receiveShadow
-                geometry={nodes.StandLowerPart.geometry}
-                material={materials.MonitorMain}
-            />
-            <mesh
-                castShadow
-                receiveShadow
-                geometry={nodes.Cube001.geometry}
-                material={materials['keyboard base_2']}
+        //     />
+        //     <mesh
+        //         castShadow
+        //         receiveShadow
+        //         geometry={nodes.Bakrest_Plane000.geometry}
+        //         material={materials['Leathe_office_chair.002']}
+        //     />
+        //     <mesh
+        //         castShadow
+        //         receiveShadow
+        //         geometry={nodes.StandLowerPart.geometry}
+        //         material={materials.MonitorMain}
+        //     />
+        //     <mesh
+        //         castShadow
+        //         receiveShadow
+        //         geometry={nodes.Cube001.geometry}
+        //         material={materials['keyboard base_2']}
 
-            />
-            <mesh
-                castShadow
-                receiveShadow
-                geometry={nodes.Cube001_1.geometry}
-                material={materials['keyboard base']}
-            />
-            <mesh
-                castShadow
-                receiveShadow
-                geometry={nodes.Cube001_2.geometry}
-                material={materials['keyboard base_3']}
-            />
-            <mesh
-                castShadow
-                receiveShadow
-                geometry={nodes.Cube001_3.geometry}
-                material={materials.foams}
-            />
-            <mesh
-                castShadow
-                receiveShadow
-                geometry={nodes.Cube001_4.geometry}
-                material={materials.letter_01}
+        //     />
+        //     <mesh
+        //         castShadow
+        //         receiveShadow
+        //         geometry={nodes.Cube001_1.geometry}
+        //         material={materials['keyboard base']}
+        //     />
+        //     <mesh
+        //         castShadow
+        //         receiveShadow
+        //         geometry={nodes.Cube001_2.geometry}
+        //         material={materials['keyboard base_3']}
+        //     />
+        //     <mesh
+        //         castShadow
+        //         receiveShadow
+        //         geometry={nodes.Cube001_3.geometry}
+        //         material={materials.foams}
+        //     />
+        //     <mesh
+        //         castShadow
+        //         receiveShadow
+        //         geometry={nodes.Cube001_4.geometry}
+        //         material={materials.letter_01}
 
-            />
-            <mesh castShadow receiveShadow geometry={nodes.Cube001_5.geometry} material={materials.esc} />
-            <mesh
-                castShadow
-                receiveShadow
-                geometry={nodes.Cube001_6.geometry}
-                material={materials.letter02}
-            />
-            <mesh
-                castShadow
-                receiveShadow
-                geometry={nodes.Cube001_7.geometry}
-                material={materials.letter03}
-            />
-            <mesh
-                castShadow
-                receiveShadow
-                geometry={nodes.Cube001_8.geometry}
-                material={materials.letter04}
-            />
-            <mesh
-                castShadow
-                receiveShadow
-                geometry={nodes.Cube001_9.geometry}
-                material={materials.letter05}
-            />
-            <mesh
-                castShadow
-                receiveShadow
-                geometry={nodes.Cube001_10.geometry}
-                material={materials.letter06}
-            />
-            <mesh
-                castShadow
-                receiveShadow
-                geometry={nodes.Cube001_11.geometry}
-                material={materials.letter07}
-            />
-            <mesh
-                castShadow
-                receiveShadow
-                geometry={nodes.Cube001_12.geometry}
-                material={materials.letter08}
-            />
-            <mesh
-                castShadow
-                receiveShadow
-                geometry={nodes.Cube001_13.geometry}
-                material={materials.letter09}
-            />
-            <mesh
-                castShadow
-                receiveShadow
-                geometry={nodes.Cube001_14.geometry}
-                material={materials.letter10}
-            />
-            <mesh
-                castShadow
-                receiveShadow
-                geometry={nodes.Cube001_15.geometry}
-                material={materials.letter11}
-            />
-            <mesh
-                castShadow
-                receiveShadow
-                geometry={nodes.Cube001_16.geometry}
-                material={materials.letter12}
-            />
-            <mesh
-                castShadow
-                receiveShadow
-                geometry={nodes.Cube001_17.geometry}
-                material={materials.letter_13}
-            />
-            <mesh
-                castShadow
-                receiveShadow
-                geometry={nodes.Cube001_18.geometry}
-                material={materials.letter_14}
-            />
-            <mesh
-                castShadow
-                receiveShadow
-                geometry={nodes.Cube001_19.geometry}
-                material={materials.letter_15}
-            />
-            <mesh
-                castShadow
-                receiveShadow
-                geometry={nodes.Cube001_20.geometry}
-                material={materials.letter_16}
-            />
-            <mesh
-                castShadow
-                receiveShadow
-                geometry={nodes.Cube001_21.geometry}
-                material={materials.letter_17}
-            />
-            <mesh
-                castShadow
-                receiveShadow
-                geometry={nodes.Cube001_22.geometry}
-                material={materials.letter_18}
-            />
-            <mesh
-                castShadow
-                receiveShadow
-                geometry={nodes.Cube001_23.geometry}
-                material={materials.letter_19}
-            />
-            <mesh
-                castShadow
-                receiveShadow
-                geometry={nodes.Cube001_24.geometry}
-                material={materials.letter_20}
-            />
-            <mesh
-                castShadow
-                receiveShadow
-                geometry={nodes.Cube001_25.geometry}
-                material={materials.letter_21}
-            />
-            <mesh
-                castShadow
-                receiveShadow
-                geometry={nodes.Cube001_26.geometry}
-                material={materials.letter_22}
-            />
-            <mesh
-                castShadow
-                receiveShadow
-                geometry={nodes.Cube001_27.geometry}
-                material={materials.letter_23}
-            />
-            <mesh
-                castShadow
-                receiveShadow
-                geometry={nodes.Cube001_28.geometry}
-                material={materials.letter_24}
-            />
-            <mesh
-                castShadow
-                receiveShadow
-                geometry={nodes.Cube001_29.geometry}
-                material={materials.letter_25}
-            />
-            <mesh
-                castShadow
-                receiveShadow
-                geometry={nodes.Cube001_30.geometry}
-                material={materials.letter_26}
-            />
-            <mesh
-                castShadow
-                receiveShadow
-                geometry={nodes.Cube001_31.geometry}
-                material={materials.letter_27}
-            />
-            <mesh
-                castShadow
-                receiveShadow
-                geometry={nodes.Cube001_32.geometry}
-                material={materials.letter_28}
-            />
-            <mesh
-                castShadow
-                receiveShadow
-                geometry={nodes.Cube001_33.geometry}
-                material={materials.letter_29}
-            />
-            <mesh
-                castShadow
-                receiveShadow
-                geometry={nodes.Cube001_34.geometry}
-                material={materials.letter_30}
-            />
-            <mesh
-                castShadow
-                receiveShadow
-                geometry={nodes.Cube001_35.geometry}
-                material={materials.letter_31}
-            />
-            <mesh
-                castShadow
-                receiveShadow
-                geometry={nodes.Cube001_36.geometry}
-                material={materials.letter_32}
-            />
-            <mesh
-                castShadow
-                receiveShadow
-                geometry={nodes.Cube001_37.geometry}
-                material={materials.letter_33}
-            />
-            <mesh
-                castShadow
-                receiveShadow
-                geometry={nodes.Cube001_38.geometry}
-                material={materials.letter_34}
-            />
-            <mesh
-                castShadow
-                receiveShadow
-                geometry={nodes.Cube001_39.geometry}
-                material={materials.letter_35}
-            />
-            <mesh
-                castShadow
-                receiveShadow
-                geometry={nodes.Cube001_40.geometry}
-                material={materials.letter_36}
-            />
-            <mesh
-                castShadow
-                receiveShadow
-                geometry={nodes.Cube001_41.geometry}
-                material={materials.letter_37}
-            />
-            <mesh
-                castShadow
-                receiveShadow
-                geometry={nodes.Cube001_42.geometry}
-                material={materials.letter_38}
-            />
-            <mesh
-                castShadow
-                receiveShadow
-                geometry={nodes.Cube001_43.geometry}
-                material={materials.letter_39}
-            />
-            <mesh
-                castShadow
-                receiveShadow
-                geometry={nodes.Cube001_44.geometry}
-                material={materials.letter_40}
-            />
-            <mesh
-                castShadow
-                receiveShadow
-                geometry={nodes.Cube001_45.geometry}
-                material={materials.letter_41}
-            />
-            <mesh
-                castShadow
-                receiveShadow
-                geometry={nodes.Cube001_46.geometry}
-                material={materials.letter_42}
-            />
-            <mesh
-                castShadow
-                receiveShadow
-                geometry={nodes.Cube001_47.geometry}
-                material={materials.letter_43}
-            />
-            <mesh
-                castShadow
-                receiveShadow
-                geometry={nodes.Cube001_48.geometry}
-                material={materials.letter_44}
-            />
-            <mesh
-                castShadow
-                receiveShadow
-                geometry={nodes.Cube001_49.geometry}
-                material={materials.letter_45}
-            />
-            <mesh
-                castShadow
-                receiveShadow
-                geometry={nodes.Cube001_50.geometry}
-                material={materials.letter_46}
-            />
-            <mesh
-                castShadow
-                receiveShadow
-                geometry={nodes.Cube001_51.geometry}
-                material={materials.letter_47}
-            />
-            <mesh
-                castShadow
-                receiveShadow
-                geometry={nodes.Cube001_52.geometry}
-                material={materials['bigger shift']}
+        //     />
+        //     <mesh castShadow receiveShadow geometry={nodes.Cube001_5.geometry} material={materials.esc} />
+        //     <mesh
+        //         castShadow
+        //         receiveShadow
+        //         geometry={nodes.Cube001_6.geometry}
+        //         material={materials.letter02}
+        //     />
+        //     <mesh
+        //         castShadow
+        //         receiveShadow
+        //         geometry={nodes.Cube001_7.geometry}
+        //         material={materials.letter03}
+        //     />
+        //     <mesh
+        //         castShadow
+        //         receiveShadow
+        //         geometry={nodes.Cube001_8.geometry}
+        //         material={materials.letter04}
+        //     />
+        //     <mesh
+        //         castShadow
+        //         receiveShadow
+        //         geometry={nodes.Cube001_9.geometry}
+        //         material={materials.letter05}
+        //     />
+        //     <mesh
+        //         castShadow
+        //         receiveShadow
+        //         geometry={nodes.Cube001_10.geometry}
+        //         material={materials.letter06}
+        //     />
+        //     <mesh
+        //         castShadow
+        //         receiveShadow
+        //         geometry={nodes.Cube001_11.geometry}
+        //         material={materials.letter07}
+        //     />
+        //     <mesh
+        //         castShadow
+        //         receiveShadow
+        //         geometry={nodes.Cube001_12.geometry}
+        //         material={materials.letter08}
+        //     />
+        //     <mesh
+        //         castShadow
+        //         receiveShadow
+        //         geometry={nodes.Cube001_13.geometry}
+        //         material={materials.letter09}
+        //     />
+        //     <mesh
+        //         castShadow
+        //         receiveShadow
+        //         geometry={nodes.Cube001_14.geometry}
+        //         material={materials.letter10}
+        //     />
+        //     <mesh
+        //         castShadow
+        //         receiveShadow
+        //         geometry={nodes.Cube001_15.geometry}
+        //         material={materials.letter11}
+        //     />
+        //     <mesh
+        //         castShadow
+        //         receiveShadow
+        //         geometry={nodes.Cube001_16.geometry}
+        //         material={materials.letter12}
+        //     />
+        //     <mesh
+        //         castShadow
+        //         receiveShadow
+        //         geometry={nodes.Cube001_17.geometry}
+        //         material={materials.letter_13}
+        //     />
+        //     <mesh
+        //         castShadow
+        //         receiveShadow
+        //         geometry={nodes.Cube001_18.geometry}
+        //         material={materials.letter_14}
+        //     />
+        //     <mesh
+        //         castShadow
+        //         receiveShadow
+        //         geometry={nodes.Cube001_19.geometry}
+        //         material={materials.letter_15}
+        //     />
+        //     <mesh
+        //         castShadow
+        //         receiveShadow
+        //         geometry={nodes.Cube001_20.geometry}
+        //         material={materials.letter_16}
+        //     />
+        //     <mesh
+        //         castShadow
+        //         receiveShadow
+        //         geometry={nodes.Cube001_21.geometry}
+        //         material={materials.letter_17}
+        //     />
+        //     <mesh
+        //         castShadow
+        //         receiveShadow
+        //         geometry={nodes.Cube001_22.geometry}
+        //         material={materials.letter_18}
+        //     />
+        //     <mesh
+        //         castShadow
+        //         receiveShadow
+        //         geometry={nodes.Cube001_23.geometry}
+        //         material={materials.letter_19}
+        //     />
+        //     <mesh
+        //         castShadow
+        //         receiveShadow
+        //         geometry={nodes.Cube001_24.geometry}
+        //         material={materials.letter_20}
+        //     />
+        //     <mesh
+        //         castShadow
+        //         receiveShadow
+        //         geometry={nodes.Cube001_25.geometry}
+        //         material={materials.letter_21}
+        //     />
+        //     <mesh
+        //         castShadow
+        //         receiveShadow
+        //         geometry={nodes.Cube001_26.geometry}
+        //         material={materials.letter_22}
+        //     />
+        //     <mesh
+        //         castShadow
+        //         receiveShadow
+        //         geometry={nodes.Cube001_27.geometry}
+        //         material={materials.letter_23}
+        //     />
+        //     <mesh
+        //         castShadow
+        //         receiveShadow
+        //         geometry={nodes.Cube001_28.geometry}
+        //         material={materials.letter_24}
+        //     />
+        //     <mesh
+        //         castShadow
+        //         receiveShadow
+        //         geometry={nodes.Cube001_29.geometry}
+        //         material={materials.letter_25}
+        //     />
+        //     <mesh
+        //         castShadow
+        //         receiveShadow
+        //         geometry={nodes.Cube001_30.geometry}
+        //         material={materials.letter_26}
+        //     />
+        //     <mesh
+        //         castShadow
+        //         receiveShadow
+        //         geometry={nodes.Cube001_31.geometry}
+        //         material={materials.letter_27}
+        //     />
+        //     <mesh
+        //         castShadow
+        //         receiveShadow
+        //         geometry={nodes.Cube001_32.geometry}
+        //         material={materials.letter_28}
+        //     />
+        //     <mesh
+        //         castShadow
+        //         receiveShadow
+        //         geometry={nodes.Cube001_33.geometry}
+        //         material={materials.letter_29}
+        //     />
+        //     <mesh
+        //         castShadow
+        //         receiveShadow
+        //         geometry={nodes.Cube001_34.geometry}
+        //         material={materials.letter_30}
+        //     />
+        //     <mesh
+        //         castShadow
+        //         receiveShadow
+        //         geometry={nodes.Cube001_35.geometry}
+        //         material={materials.letter_31}
+        //     />
+        //     <mesh
+        //         castShadow
+        //         receiveShadow
+        //         geometry={nodes.Cube001_36.geometry}
+        //         material={materials.letter_32}
+        //     />
+        //     <mesh
+        //         castShadow
+        //         receiveShadow
+        //         geometry={nodes.Cube001_37.geometry}
+        //         material={materials.letter_33}
+        //     />
+        //     <mesh
+        //         castShadow
+        //         receiveShadow
+        //         geometry={nodes.Cube001_38.geometry}
+        //         material={materials.letter_34}
+        //     />
+        //     <mesh
+        //         castShadow
+        //         receiveShadow
+        //         geometry={nodes.Cube001_39.geometry}
+        //         material={materials.letter_35}
+        //     />
+        //     <mesh
+        //         castShadow
+        //         receiveShadow
+        //         geometry={nodes.Cube001_40.geometry}
+        //         material={materials.letter_36}
+        //     />
+        //     <mesh
+        //         castShadow
+        //         receiveShadow
+        //         geometry={nodes.Cube001_41.geometry}
+        //         material={materials.letter_37}
+        //     />
+        //     <mesh
+        //         castShadow
+        //         receiveShadow
+        //         geometry={nodes.Cube001_42.geometry}
+        //         material={materials.letter_38}
+        //     />
+        //     <mesh
+        //         castShadow
+        //         receiveShadow
+        //         geometry={nodes.Cube001_43.geometry}
+        //         material={materials.letter_39}
+        //     />
+        //     <mesh
+        //         castShadow
+        //         receiveShadow
+        //         geometry={nodes.Cube001_44.geometry}
+        //         material={materials.letter_40}
+        //     />
+        //     <mesh
+        //         castShadow
+        //         receiveShadow
+        //         geometry={nodes.Cube001_45.geometry}
+        //         material={materials.letter_41}
+        //     />
+        //     <mesh
+        //         castShadow
+        //         receiveShadow
+        //         geometry={nodes.Cube001_46.geometry}
+        //         material={materials.letter_42}
+        //     />
+        //     <mesh
+        //         castShadow
+        //         receiveShadow
+        //         geometry={nodes.Cube001_47.geometry}
+        //         material={materials.letter_43}
+        //     />
+        //     <mesh
+        //         castShadow
+        //         receiveShadow
+        //         geometry={nodes.Cube001_48.geometry}
+        //         material={materials.letter_44}
+        //     />
+        //     <mesh
+        //         castShadow
+        //         receiveShadow
+        //         geometry={nodes.Cube001_49.geometry}
+        //         material={materials.letter_45}
+        //     />
+        //     <mesh
+        //         castShadow
+        //         receiveShadow
+        //         geometry={nodes.Cube001_50.geometry}
+        //         material={materials.letter_46}
+        //     />
+        //     <mesh
+        //         castShadow
+        //         receiveShadow
+        //         geometry={nodes.Cube001_51.geometry}
+        //         material={materials.letter_47}
+        //     />
+        //     <mesh
+        //         castShadow
+        //         receiveShadow
+        //         geometry={nodes.Cube001_52.geometry}
+        //         material={materials['bigger shift']}
 
-            />
-            <mesh
-                castShadow
-                receiveShadow
-                geometry={nodes.Cube001_53.geometry}
-                material={materials['bloq mayus']}
-            />
-            <mesh
-                castShadow
-                receiveShadow
-                geometry={nodes.Cube001_54.geometry}
-                material={materials.enter}
-            />
-            <mesh
-                castShadow
-                receiveShadow
-                geometry={nodes.Cube001_55.geometry}
-                material={materials['space bar']}
+        //     />
+        //     <mesh
+        //         castShadow
+        //         receiveShadow
+        //         geometry={nodes.Cube001_53.geometry}
+        //         material={materials['bloq mayus']}
+        //     />
+        //     <mesh
+        //         castShadow
+        //         receiveShadow
+        //         geometry={nodes.Cube001_54.geometry}
+        //         material={materials.enter}
+        //     />
+        //     <mesh
+        //         castShadow
+        //         receiveShadow
+        //         geometry={nodes.Cube001_55.geometry}
+        //         material={materials['space bar']}
 
-            />
-            <mesh
-                castShadow
-                receiveShadow
-                geometry={nodes.Cube001_56.geometry}
-                material={materials.retro}
-            />
-            <mesh
-                castShadow
-                receiveShadow
-                geometry={nodes.Cube001_57.geometry}
-                material={materials.tab}
-            />
-            <mesh
-                castShadow
-                receiveShadow
-                geometry={nodes.Cube001_58.geometry}
-                material={materials.shift}
-            />
-            <mesh
-                castShadow
-                receiveShadow
-                geometry={nodes.Cube001_59.geometry}
-                material={materials.ctrl}
-            />
-            <mesh
-                castShadow
-                receiveShadow
-                geometry={nodes.Cube001_60.geometry}
-                material={materials.alt}
-            />
-            <mesh
-                castShadow
-                receiveShadow
-                geometry={nodes.Cube001_61.geometry}
-                material={materials.win}
-            />
-            <mesh castShadow receiveShadow geometry={nodes.Cube001_62.geometry} material={materials.fn} />
-            <mesh
-                castShadow
-                receiveShadow
-                geometry={nodes.Cube001_63.geometry}
-                material={materials.notes}
-            />
-            <mesh
-                castShadow
-                receiveShadow
-                geometry={nodes.Cube001_64.geometry}
-                material={materials.usb}
-            />
-            <mesh
-                castShadow
-                receiveShadow
-                geometry={nodes.Cone.geometry}
-                material={materials.Ip14pmx_lens1}
-            />
-            <mesh
-                castShadow
-                receiveShadow
-                geometry={nodes.Cone_1.geometry}
-                material={materials.Ip14pmx_lens2}
-            />
-            <mesh
-                castShadow
-                receiveShadow
-                geometry={nodes.Cone_2.geometry}
-                material={materials.Ip14pmx_lens}
-            />
-            <mesh
-                castShadow
-                receiveShadow
-                geometry={nodes.Cone_3.geometry}
-                material={materials.Ip14pmx_lense_metal}
-            />
-            <mesh
-                castShadow
-                receiveShadow
-                geometry={nodes.Cone_4.geometry}
-                material={materials.Ip14pmx_lens4}
-            />
-            <mesh
-                castShadow
-                receiveShadow
-                geometry={nodes.Cone_5.geometry}
-                material={materials.Ip14pmx_flash_glass}
-            />
-            <mesh
-                castShadow
-                receiveShadow
-                geometry={nodes.Cone_6.geometry}
-                material={materials.Ip14pmx_flash}
-            />
-            <mesh
-                castShadow
-                receiveShadow
-                geometry={nodes.Cone_7.geometry}
-                material={materials.Ip14pmx_flash_metal}
-            />
-            <mesh
-                castShadow
-                receiveShadow
-                geometry={nodes.Cone001.geometry}
-                material={materials.Ip14pmx_back_metal}
-            />
-            <mesh
-                castShadow
-                receiveShadow
-                geometry={nodes.Cone001_1.geometry}
-                material={materials.Ip14pmx_back_metal2}
-            />
-            <mesh
-                castShadow
-                receiveShadow
-                geometry={nodes.Cone001_2.geometry}
-                material={materials.Ip14pmx_logo}
-            />
-            <mesh
-                castShadow
-                receiveShadow
-                geometry={nodes.Cone003.geometry}
-                material={materials.Ip14pmx_back_metal}
-            />
-            <mesh
-                castShadow
-                receiveShadow
-                geometry={nodes.Cone003_1.geometry}
-                material={materials.Ip14pmx_metal}
-            />
-            <mesh
-                castShadow
-                receiveShadow
-                geometry={nodes.Cone003_2.geometry}
-                material={materials.Ip14pmx_insulator}
-            />
-            <mesh
-                castShadow
-                receiveShadow
-                geometry={nodes.Cone003_3.geometry}
-                material={materials.Ip14pmx_white_metal}
-            />
-            <mesh
-                castShadow
-                receiveShadow
-                geometry={nodes.Cone002.geometry}
-                material={materials.Ip14pmx_black_screen}
-            />
-            <mesh
-                castShadow
-                receiveShadow
-                geometry={nodes.Cone002_1.geometry}
-                material={materials.Ip14pmx_screen}
+        //     />
+        //     <mesh
+        //         castShadow
+        //         receiveShadow
+        //         geometry={nodes.Cube001_56.geometry}
+        //         material={materials.retro}
+        //     />
+        //     <mesh
+        //         castShadow
+        //         receiveShadow
+        //         geometry={nodes.Cube001_57.geometry}
+        //         material={materials.tab}
+        //     />
+        //     <mesh
+        //         castShadow
+        //         receiveShadow
+        //         geometry={nodes.Cube001_58.geometry}
+        //         material={materials.shift}
+        //     />
+        //     <mesh
+        //         castShadow
+        //         receiveShadow
+        //         geometry={nodes.Cube001_59.geometry}
+        //         material={materials.ctrl}
+        //     />
+        //     <mesh
+        //         castShadow
+        //         receiveShadow
+        //         geometry={nodes.Cube001_60.geometry}
+        //         material={materials.alt}
+        //     />
+        //     <mesh
+        //         castShadow
+        //         receiveShadow
+        //         geometry={nodes.Cube001_61.geometry}
+        //         material={materials.win}
+        //     />
+        //     <mesh castShadow receiveShadow geometry={nodes.Cube001_62.geometry} material={materials.fn} />
+        //     <mesh
+        //         castShadow
+        //         receiveShadow
+        //         geometry={nodes.Cube001_63.geometry}
+        //         material={materials.notes}
+        //     />
+        //     <mesh
+        //         castShadow
+        //         receiveShadow
+        //         geometry={nodes.Cube001_64.geometry}
+        //         material={materials.usb}
+        //     />
+        //     <mesh
+        //         castShadow
+        //         receiveShadow
+        //         geometry={nodes.Cone.geometry}
+        //         material={materials.Ip14pmx_lens1}
+        //     />
+        //     <mesh
+        //         castShadow
+        //         receiveShadow
+        //         geometry={nodes.Cone_1.geometry}
+        //         material={materials.Ip14pmx_lens2}
+        //     />
+        //     <mesh
+        //         castShadow
+        //         receiveShadow
+        //         geometry={nodes.Cone_2.geometry}
+        //         material={materials.Ip14pmx_lens}
+        //     />
+        //     <mesh
+        //         castShadow
+        //         receiveShadow
+        //         geometry={nodes.Cone_3.geometry}
+        //         material={materials.Ip14pmx_lense_metal}
+        //     />
+        //     <mesh
+        //         castShadow
+        //         receiveShadow
+        //         geometry={nodes.Cone_4.geometry}
+        //         material={materials.Ip14pmx_lens4}
+        //     />
+        //     <mesh
+        //         castShadow
+        //         receiveShadow
+        //         geometry={nodes.Cone_5.geometry}
+        //         material={materials.Ip14pmx_flash_glass}
+        //     />
+        //     <mesh
+        //         castShadow
+        //         receiveShadow
+        //         geometry={nodes.Cone_6.geometry}
+        //         material={materials.Ip14pmx_flash}
+        //     />
+        //     <mesh
+        //         castShadow
+        //         receiveShadow
+        //         geometry={nodes.Cone_7.geometry}
+        //         material={materials.Ip14pmx_flash_metal}
+        //     />
+        //     <mesh
+        //         castShadow
+        //         receiveShadow
+        //         geometry={nodes.Cone001.geometry}
+        //         material={materials.Ip14pmx_back_metal}
+        //     />
+        //     <mesh
+        //         castShadow
+        //         receiveShadow
+        //         geometry={nodes.Cone001_1.geometry}
+        //         material={materials.Ip14pmx_back_metal2}
+        //     />
+        //     <mesh
+        //         castShadow
+        //         receiveShadow
+        //         geometry={nodes.Cone001_2.geometry}
+        //         material={materials.Ip14pmx_logo}
+        //     />
+        //     <mesh
+        //         castShadow
+        //         receiveShadow
+        //         geometry={nodes.Cone003.geometry}
+        //         material={materials.Ip14pmx_back_metal}
+        //     />
+        //     <mesh
+        //         castShadow
+        //         receiveShadow
+        //         geometry={nodes.Cone003_1.geometry}
+        //         material={materials.Ip14pmx_metal}
+        //     />
+        //     <mesh
+        //         castShadow
+        //         receiveShadow
+        //         geometry={nodes.Cone003_2.geometry}
+        //         material={materials.Ip14pmx_insulator}
+        //     />
+        //     <mesh
+        //         castShadow
+        //         receiveShadow
+        //         geometry={nodes.Cone003_3.geometry}
+        //         material={materials.Ip14pmx_white_metal}
+        //     />
+        //     <mesh
+        //         castShadow
+        //         receiveShadow
+        //         geometry={nodes.Cone002.geometry}
+        //         material={materials.Ip14pmx_black_screen}
+        //     />
+        //     <mesh
+        //         castShadow
+        //         receiveShadow
+        //         geometry={nodes.Cone002_1.geometry}
+        //         material={materials.Ip14pmx_screen}
 
-            />
-            <mesh
-                castShadow
-                receiveShadow
-                geometry={nodes.Cone002_2.geometry}
-                material={materials.Ip14pmx_lens}
-            />
-            <mesh
-                castShadow
-                receiveShadow
-                geometry={nodes.Cone002_3.geometry}
-                material={materials.Ip14pmx_speeker}
+        //     />
+        //     <mesh
+        //         castShadow
+        //         receiveShadow
+        //         geometry={nodes.Cone002_2.geometry}
+        //         material={materials.Ip14pmx_lens}
+        //     />
+        //     <mesh
+        //         castShadow
+        //         receiveShadow
+        //         geometry={nodes.Cone002_3.geometry}
+        //         material={materials.Ip14pmx_speeker}
 
-            />
-            <mesh
-                castShadow
-                receiveShadow
-                geometry={nodes.Cone002_4.geometry}
-                material={materials.Ip14pmx_lens4}
-            />
-            <mesh
-                castShadow
-                receiveShadow
-                geometry={nodes.Plane004.geometry}
-                material={materials.MonitorMain}
+        //     />
+        //     <mesh
+        //         castShadow
+        //         receiveShadow
+        //         geometry={nodes.Cone002_4.geometry}
+        //         material={materials.Ip14pmx_lens4}
+        //     />
+        //     <mesh
+        //         castShadow
+        //         receiveShadow
+        //         geometry={nodes.Plane004.geometry}
+        //         material={materials.MonitorMain}
 
-            />
-            <mesh
-                castShadow
-                receiveShadow
-                geometry={nodes.Plane004_1.geometry}
-                material={materials.MonitorTrim}
+        //     />
+        //     <mesh
+        //         castShadow
+        //         receiveShadow
+        //         geometry={nodes.Plane004_1.geometry}
+        //         material={materials.MonitorTrim}
 
-            />
-            <mesh
-                castShadow
-                receiveShadow
-                geometry={nodes.Plane004_2.geometry}
-                ref={videoRef2}
-            >
-                <meshBasicMaterial map={textureVscode} toneMapped={false} />
-            </mesh>
-            <mesh
-                castShadow
-                receiveShadow
-                geometry={nodes.RearPanel.geometry}
-                material={materials.MonitorMain}>
+        //     />
+        //     <mesh
+        //         castShadow
+        //         receiveShadow
+        //         geometry={nodes.Plane004_2.geometry}
+        //         ref={videoRef1}
+        //     >
+        //         <meshBasicMaterial map={textureVscode} toneMapped={false} />
+        //     </mesh>
+        //     <mesh
+        //         castShadow
+        //         receiveShadow
+        //         geometry={nodes.RearPanel.geometry}
+        //         material={materials.MonitorMain}>
 
-                <mesh
-                    castShadow
-                    receiveShadow
-                    geometry={nodes.StandUpperPart.geometry}
-                    material={materials.MonitorMain}>
-                    <mesh
-                        castShadow
-                        receiveShadow
-                        geometry={nodes.Cylinder.geometry}
-                        material={materials.MonitorTrim}
-                    />
-                    <mesh
-                        castShadow
-                        receiveShadow
-                        geometry={nodes.Cylinder_1.geometry}
-                        material={materials.MonitorMain}
-                    />
-                </mesh>
-            </mesh>
-            <mesh
-                castShadow
-                receiveShadow
-                geometry={nodes.Plane007.geometry}
-                material={materials['MonitorMain.001']}
+        //         <mesh
+        //             castShadow
+        //             receiveShadow
+        //             geometry={nodes.StandUpperPart.geometry}
+        //             material={materials.MonitorMain}>
+        //             <mesh
+        //                 castShadow
+        //                 receiveShadow
+        //                 geometry={nodes.Cylinder.geometry}
+        //                 material={materials.MonitorTrim}
+        //             />
+        //             <mesh
+        //                 castShadow
+        //                 receiveShadow
+        //                 geometry={nodes.Cylinder_1.geometry}
+        //                 material={materials.MonitorMain}
+        //             />
+        //         </mesh>
+        //     </mesh>
+        //     <mesh
+        //         castShadow
+        //         receiveShadow
+        //         geometry={nodes.Plane007.geometry}
+        //         material={materials['MonitorMain.001']}
 
-            />
-            <mesh
-                castShadow
-                receiveShadow
-                geometry={nodes.Plane007_1.geometry}
-                material={materials['MonitorTrim.001']}
+        //     />
+        //     <mesh
+        //         castShadow
+        //         receiveShadow
+        //         geometry={nodes.Plane007_1.geometry}
+        //         material={materials['MonitorTrim.001']}
 
-            />
-            <mesh
-                castShadow
-                receiveShadow
-                geometry={nodes.Plane007_2.geometry}
-                ref={videoRef1}
-            >
+        //     />
+        //     <mesh
+        //         castShadow
+        //         receiveShadow
+        //         geometry={nodes.Plane007_2.geometry}
+        //         ref={videoRef2}
+        //     />
 
-            </mesh>
+        // </group>
+
+        <group {...props} dispose={null}>
+            <group>
+                <group>
+                    <mesh geometry={nodes.Cube001.geometry} material={materials['keyboard base_2']} />
+                    <mesh geometry={nodes.Cube001_1.geometry} material={materials['keyboard base']} />
+                    <mesh geometry={nodes.Cube001_2.geometry} material={materials['keyboard base_3']} />
+                    <mesh geometry={nodes.Cube001_3.geometry} material={materials.foams} />
+                    <mesh geometry={nodes.Cube001_4.geometry} material={materials.letter_01} />
+                    <mesh geometry={nodes.Cube001_5.geometry} material={materials.esc} />
+                    <mesh geometry={nodes.Cube001_6.geometry} material={materials.letter02} />
+                    <mesh geometry={nodes.Cube001_7.geometry} material={materials.letter03} />
+                    <mesh geometry={nodes.Cube001_8.geometry} material={materials.letter04} />
+                    <mesh geometry={nodes.Cube001_9.geometry} material={materials.letter05} />
+                    <mesh geometry={nodes.Cube001_10.geometry} material={materials.letter06} />
+                    <mesh geometry={nodes.Cube001_11.geometry} material={materials.letter07} />
+                    <mesh geometry={nodes.Cube001_12.geometry} material={materials.letter08} />
+                    <mesh geometry={nodes.Cube001_13.geometry} material={materials.letter09} />
+                    <mesh geometry={nodes.Cube001_14.geometry} material={materials.letter10} />
+                    <mesh geometry={nodes.Cube001_15.geometry} material={materials.letter11} />
+                    <mesh geometry={nodes.Cube001_16.geometry} material={materials.letter12} />
+                    <mesh geometry={nodes.Cube001_17.geometry} material={materials.letter_13} />
+                    <mesh geometry={nodes.Cube001_18.geometry} material={materials.letter_14} />
+                    <mesh geometry={nodes.Cube001_19.geometry} material={materials.letter_15} />
+                    <mesh geometry={nodes.Cube001_20.geometry} material={materials.letter_16} />
+                    <mesh geometry={nodes.Cube001_21.geometry} material={materials.letter_17} />
+                    <mesh geometry={nodes.Cube001_22.geometry} material={materials.letter_18} />
+                    <mesh geometry={nodes.Cube001_23.geometry} material={materials.letter_19} />
+                    <mesh geometry={nodes.Cube001_24.geometry} material={materials.letter_20} />
+                    <mesh geometry={nodes.Cube001_25.geometry} material={materials.letter_21} />
+                    <mesh geometry={nodes.Cube001_26.geometry} material={materials.letter_22} />
+                    <mesh geometry={nodes.Cube001_27.geometry} material={materials.letter_23} />
+                    <mesh geometry={nodes.Cube001_28.geometry} material={materials.letter_24} />
+                    <mesh geometry={nodes.Cube001_29.geometry} material={materials.letter_25} />
+                    <mesh geometry={nodes.Cube001_30.geometry} material={materials.letter_26} />
+                    <mesh geometry={nodes.Cube001_31.geometry} material={materials.letter_27} />
+                    <mesh geometry={nodes.Cube001_32.geometry} material={materials.letter_28} />
+                    <mesh geometry={nodes.Cube001_33.geometry} material={materials.letter_29} />
+                    <mesh geometry={nodes.Cube001_34.geometry} material={materials.letter_30} />
+                    <mesh geometry={nodes.Cube001_35.geometry} material={materials.letter_31} />
+                    <mesh geometry={nodes.Cube001_36.geometry} material={materials.letter_32} />
+                    <mesh geometry={nodes.Cube001_37.geometry} material={materials.letter_33} />
+                    <mesh geometry={nodes.Cube001_38.geometry} material={materials.letter_34} />
+                    <mesh geometry={nodes.Cube001_39.geometry} material={materials.letter_35} />
+                    <mesh geometry={nodes.Cube001_40.geometry} material={materials.letter_36} />
+                    <mesh geometry={nodes.Cube001_41.geometry} material={materials.letter_37} />
+                    <mesh geometry={nodes.Cube001_42.geometry} material={materials.letter_38} />
+                    <mesh geometry={nodes.Cube001_43.geometry} material={materials.letter_39} />
+                    <mesh geometry={nodes.Cube001_44.geometry} material={materials.letter_40} />
+                    <mesh geometry={nodes.Cube001_45.geometry} material={materials.letter_41} />
+                    <mesh geometry={nodes.Cube001_46.geometry} material={materials.letter_42} />
+                    <mesh geometry={nodes.Cube001_47.geometry} material={materials.letter_43} />
+                    <mesh geometry={nodes.Cube001_48.geometry} material={materials.letter_44} />
+                    <mesh geometry={nodes.Cube001_49.geometry} material={materials.letter_45} />
+                    <mesh geometry={nodes.Cube001_50.geometry} material={materials.letter_46} />
+                    <mesh geometry={nodes.Cube001_51.geometry} material={materials.letter_47} />
+                    <mesh geometry={nodes.Cube001_52.geometry} material={materials['bigger shift']} />
+                    <mesh geometry={nodes.Cube001_53.geometry} material={materials['bloq mayus']} />
+                    <mesh geometry={nodes.Cube001_54.geometry} material={materials.enter} />
+                    <mesh geometry={nodes.Cube001_55.geometry} material={materials['space bar']} />
+                    <mesh geometry={nodes.Cube001_56.geometry} material={materials.retro} />
+                    <mesh geometry={nodes.Cube001_57.geometry} material={materials.tab} />
+                    <mesh geometry={nodes.Cube001_58.geometry} material={materials.shift} />
+                    <mesh geometry={nodes.Cube001_59.geometry} material={materials.ctrl} />
+                    <mesh geometry={nodes.Cube001_60.geometry} material={materials.alt} />
+                    <mesh geometry={nodes.Cube001_61.geometry} material={materials.win} />
+                    <mesh geometry={nodes.Cube001_62.geometry} material={materials.fn} />
+                    <mesh geometry={nodes.Cube001_63.geometry} material={materials.notes} />
+                    <mesh geometry={nodes.Cube001_64.geometry} material={materials.usb} />
+                </group>
+                <mesh geometry={nodes.cable.geometry} material={materials.cable} />
+                <mesh geometry={nodes.Tabletop.geometry} material={materials.DeskMat} />
+                <mesh geometry={nodes.LegUpper_left.geometry} material={materials.DeskMat} />
+                <mesh geometry={nodes.LegLower_left.geometry} material={materials.DeskMat} />
+                <mesh geometry={nodes.LegUpper_right.geometry} material={materials.DeskMat} />
+                <mesh geometry={nodes.LegLower_right.geometry} material={materials.DeskMat} />
+                <mesh geometry={nodes.Control_Box.geometry} material={materials.DeskMat} />
+                <mesh geometry={nodes.legFoot_01.geometry} material={nodes.legFoot_01.material} />
+                <mesh geometry={nodes.legFoot_02.geometry} material={nodes.legFoot_02.material} />
+                <mesh geometry={nodes.carpet_low001.geometry} material={materials['01___Default']} />
+                <group>
+                    <mesh geometry={nodes.Cone.geometry} material={materials.Ip14pmx_lens1} />
+                    <mesh geometry={nodes.Cone_1.geometry} material={materials.Ip14pmx_lens2} />
+                    <mesh geometry={nodes.Cone_2.geometry} material={materials.Ip14pmx_lens} />
+                    <mesh geometry={nodes.Cone_3.geometry} material={materials.Ip14pmx_lense_metal} />
+                    <mesh geometry={nodes.Cone_4.geometry} material={materials.Ip14pmx_lens4} />
+                    <mesh geometry={nodes.Cone_5.geometry} material={materials.Ip14pmx_flash_glass} />
+                    <mesh geometry={nodes.Cone_6.geometry} material={materials.Ip14pmx_flash} />
+                    <mesh geometry={nodes.Cone_7.geometry} material={materials.Ip14pmx_flash_metal} />
+                </group>
+                <group>
+                    <mesh geometry={nodes.Cone001.geometry} material={materials.Ip14pmx_back_metal} />
+                    <mesh geometry={nodes.Cone001_1.geometry} material={materials.Ip14pmx_back_metal2} />
+                    <mesh geometry={nodes.Cone001_2.geometry} material={materials.Ip14pmx_logo} />
+                </group>
+                <group>
+                    <mesh geometry={nodes.Cone003.geometry} material={materials.Ip14pmx_back_metal} />
+                    <mesh geometry={nodes.Cone003_1.geometry} material={materials.Ip14pmx_metal} />
+                    <mesh geometry={nodes.Cone003_2.geometry} material={materials.Ip14pmx_insulator} />
+                    <mesh geometry={nodes.Cone003_3.geometry} material={materials.Ip14pmx_white_metal} />
+                </group>
+                <group>
+                    <mesh geometry={nodes.Cone002.geometry} material={materials.Ip14pmx_black_screen} />
+                    <mesh geometry={nodes.Cone002_1.geometry} material={materials.Ip14pmx_screen} />
+                    <mesh geometry={nodes.Cone002_2.geometry} material={materials.Ip14pmx_lens} />
+                    <mesh geometry={nodes.Cone002_3.geometry} material={materials.Ip14pmx_speeker} />
+                    <mesh geometry={nodes.Cone002_4.geometry} material={materials.Ip14pmx_lens4} />
+                </group>
+                <mesh geometry={nodes.Ip14pmx_lens_glass.geometry} material={materials.Ip14pmx_lens_glass} />
+                <mesh geometry={nodes.Ip14pmx_screen_glass.geometry} material={materials.Ip14pmx_screen_glass} />
+                <mesh geometry={nodes.Ip14pmx_camglass.geometry} material={materials.Ip14pmx_camglass} />
+                <mesh geometry={nodes.Plane002.geometry} material={nodes.Plane002.material} />
+                <mesh geometry={nodes.StandLowerPart001.geometry} material={materials['MonitorMain.001']} />
+                <mesh geometry={nodes.Bakrest_Plane000.geometry} material={materials['Leathe_office_chair.002']} />
+                <mesh geometry={nodes.StandLowerPart.geometry} material={materials.MonitorMain} />
+                <group>
+                    <mesh geometry={nodes.Plane004.geometry} material={materials.MonitorMain} />
+                    <mesh geometry={nodes.Plane004_1.geometry} material={materials.MonitorTrim} />
+                    <mesh geometry={nodes.Plane004_2.geometry} material={materials.ScreenPanel} />
+                    <mesh geometry={nodes.RearPanel.geometry} material={materials.MonitorMain}>
+                        <mesh geometry={nodes.StandUpperPart.geometry} material={materials.MonitorMain}>
+                            <group>
+                                <mesh geometry={nodes.Cylinder.geometry} material={materials.MonitorTrim} />
+                                <mesh geometry={nodes.Cylinder_1.geometry} material={materials.MonitorMain} />
+                            </group>
+                        </mesh>
+                    </mesh>
+                </group>
+                <group>
+                    <mesh geometry={nodes.Plane007.geometry} material={materials['MonitorMain.001']} />
+                    <mesh geometry={nodes.Plane007_1.geometry} material={materials['MonitorTrim.001']} />
+                    <mesh geometry={nodes.Plane007_2.geometry} material={materials['ScreenPanel.001']} />
+                </group>
+                <mesh geometry={nodes.ScreenMain.geometry} material={materials.MonitorMain} ref={videoRef2} />
+                <mesh geometry={nodes.ScreenMain2.geometry} material={materials['MonitorMain.001']} ref={videoRef1} />
+            </group>
         </group>
     )
 }
 
-useGLTF.preload('/ene.glb')
+useGLTF.preload('/enee.glb')
