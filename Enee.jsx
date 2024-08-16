@@ -11,9 +11,6 @@ export function Model(props) {
   return (
     <group {...props} dispose={null}>
       <group>
-        <group />
-        <group />
-        <group />
         <group>
           <mesh geometry={nodes.Cube001.geometry} material={materials['keyboard base_2']} />
           <mesh geometry={nodes.Cube001_1.geometry} material={materials['keyboard base']} />
