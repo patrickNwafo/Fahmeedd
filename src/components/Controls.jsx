@@ -56,11 +56,11 @@ export const Controls = () => {
                 >
                     <div ref={menuRef} className="w-full max-w-3xl p-4 mx-auto rounded-lg md:p-8">
                         <div className="flex flex-col items-center space-y-4">
-                            <a href="#" className="text-lg font-semibold transition hover:translate-x-1 hover:text-gray-700">TikTok</a>
-                            <a href="#" className="text-lg font-semibold hover:translate-x-1 hover:text-gray-700">Instagram</a>
-                            <a href="#" className="text-lg font-semibold hover:translate-x-1 hover:text-gray-700">Twitter</a>
-                            <a href="#" className="text-lg font-semibold hover:translate-x-1 hover:text-gray-700">YouTube</a>
-                            <a href="#" className="text-lg font-semibold hover:translate-x-1 hover:text-gray-700">Interview</a>
+                            <a href="#" className="text-lg md:text-2xl font-semibold transition hover:translate-x-1 hover:text-gray-700">TikTok</a>
+                            <a href="#" className="text-lg font-semibold hover:translate-x-1 hover:text-gray-700 md:text-2xl">Instagram</a>
+                            <a href="#" className="text-lg font-semibold hover:translate-x-1 hover:text-gray-700 md:text-2xl">Twitter</a>
+                            <a href="#" className="text-lg font-semibold hover:translate-x-1 hover:text-gray-700 md:text-2xl">YouTube</a>
+                            <a href="#" className="text-lg font-semibold hover:translate-x-1 hover:text-gray-700 md:text-2xl">Interview</a>
                         </div>
                     </div>
                 </motion.div>
