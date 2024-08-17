@@ -48,7 +48,7 @@ export const Controls = () => {
 
             {menuVisible && (
                 <motion.div
-                    className="fixed inset-0 flex items-center justify-center w-screen h-screen bg-white bg-opacity-50"
+                    className="fixed inset-0 flex items-center justify-center w-screen h-screen bg-white bg-opacity-80"
                     initial={{ opacity: 0, y: -20 }}
                     animate={{ opacity: 1, y: 0 }}
                     exit={{ opacity: 0, y: -20 }}
